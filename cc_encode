@@ -1,0 +1,31 @@
+function c = cc_encode(u, trellis)
+
+    k = lenght(u); %nbr de symbols dans le message
+    c = [];
+    state = 0;
+    j = log2(trellis.numStates);
+    
+    % Parcourir les symboles d'entrée
+    for i = 1:k
+        % encodage
+        next_state = trellis.nextStates(state + 1, u(i) + 1);
+        output_symbol = trellis.outputs(state + 1, u(i) + 1);
+        % Mise à jour
+        c = [c, de2bi(output_symbol, 'left-msb',m)];
+        state = next_state;
+    end
+
+    % Fermeture du treillis
+    for i = 1:j
+        output_symbol = trellis.outputs(state+1, 1);
+        c = [c, de2bi(output_symbol, 'left-msb',m)];
+        next_state = trellis.nextStates(state+1, 1);
+        
+    end
+
+    % Vérification de l'état final
+    if state ~= 0
+        error('Le treillis n est pas correctement fermé.');
+    end
+
+end
